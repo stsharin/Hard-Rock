@@ -1,18 +1,27 @@
-const searchSongs = async() => {
+const searchSongs = () => {
     const searchText = document.getElementById('search-field').value;
     // console.log(searchText);
     const url = `https://api.lyrics.ovh/suggest/${searchText}`;
     // console log(url);
 
     // load data
-    // fetch(url) // fetching the url
-    //     .then(res => res.json())
-    //     .then(data => displaySongs(data.data)); // {object's property}
-
-    const res = await fetch(url);
-    const data = await res.json();
-    displaySongs(data.data);
+    fetch(url) // fetching the url
+        .then(res => res.json())
+        .then(data => displaySongs(data.data)) // {object's property}
+        .catch(error => displayError('Something went wrong!! Please try again later.'));
 }
+
+// load data with async, await
+// const searchSongs = async() => {
+//     const searchText = document.getElementById('search-field').value;
+//     const url = `https://api.lyrics.ovh/suggest/${searchText}`;
+
+//     // load data
+//     const res = await fetch(url);
+//     const data = await res.json();
+//     displaySongs(data.data);
+// }
+
 
 const displaySongs = songs => {
     const songContainer = document.getElementById('song-container');
@@ -41,16 +50,22 @@ const getLyric = async(artist, title) => {
     // console.log(artist, title);
     const url = `https://api.lyrics.ovh/v1/${artist}/${title}`;
     // console.log(url);
+    try{
+        const res = await fetch(url);
+        const data = await res.json();
+        displayLyrics(data.lyrics); // {object's property}
+    }
+    catch(error){
+        displayError('Sorry!! failed to load lyrics, Please try again later.');
+    }
 
-    // fetch(url)
-    // .then(res => res.json())
-    // .then(data => displayLyrics(data.lyrics)) // {object's property}
-
-    const res = await fetch(url);
-    const data = await res.json();
-    displayLyrics(data.lyrics);
 }
 const displayLyrics = lyrics => {
     const lyricsDiv = document.getElementById('song-lyrics');
     lyricsDiv.innerText = lyrics;
+}
+
+const displayError = error => {
+    const errorTag = document.getElementById('error-message');
+    errorTag.innerText = error;
 }
